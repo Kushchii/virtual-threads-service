@@ -1,3 +1,12 @@
 databaseChangeLog:
+  - changeSet:
+      id: 1-create-schema
+      author: liquibase
+      changes:
+        - sql:
+            dbms: postgresql
+            splitStatements: false
+            sql: CREATE SCHEMA IF NOT EXISTS transactions;
+
   - includeAll:
       path: liquibase/migrations
