@@ -1,6 +1,6 @@
 spring:
   application:
-    name: transaction_service
+    name: virtual-threads-service
   threads:
     virtual:
       enabled: true
@@ -28,17 +28,24 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, metrics
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
     distribution:
       percentiles:
-        http.client.requests: 0.5, 0.75, 0.95, 0.99
-        http.server.requests: 0.5, 0.75, 0.95, 0.99
+        http.server.requests: 0.5, 0.75, 0.95, 0.98, 0.99
       percentiles-histogram:
-        http.client.requests: true
         http.server.requests: true
+      minimum-expected-value:
+        http.server.requests: 100ms
+      maximum-expected-value:
+        http.server.requests: 10s
 
 service:
   client:

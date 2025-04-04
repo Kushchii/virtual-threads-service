@@ -10,8 +10,8 @@ export let totalRequests = new Counter('http_reqs_total');
 export let statusCodes = new Counter('status_codes');
 
 export let options = {
-    vus: 100,
-    duration: '30s',
+    vus: 10000,
+    duration: '100s',
     thresholds: {
         http_req_duration: ['p(95)<2000'], // 95% запитів повинні бути швидше ніж 2 сек
         http_req_failed: ['rate<0.01'], // Менше 1% запитів можуть бути невдалими
