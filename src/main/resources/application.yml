@@ -43,8 +43,6 @@ management:
         http.server.requests: 100ms
       maximum-expected-value:
         http.server.requests: 10s
-      slo:
-        http.server.requests: 300ms,500ms,1s,2s,5s,10s
 
 service:
   client:
