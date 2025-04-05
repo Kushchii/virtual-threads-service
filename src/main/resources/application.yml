@@ -20,3 +20,33 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: always
+  tracing:
+    enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles:
+        http.server.requests: 0.5, 0.75, 0.95, 0.98, 0.99
+      percentiles-histogram:
+        http.server.requests: true
+      minimum-expected-value:
+        http.server.requests: 100ms
+      maximum-expected-value:
+        http.server.requests: 10s
+      slo:
+        http.server.requests: 300ms,500ms,1s,2s,5s,10s
+
+service:
+  client:
+    transaction:
+      url: http://localhost:3008

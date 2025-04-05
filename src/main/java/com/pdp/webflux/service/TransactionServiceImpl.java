@@ -8,6 +8,7 @@ import com.pdp.webflux.persistent.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import reactor.core.publisher.Mono;
@@ -26,10 +27,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
 
+    private final WebClient webClient;
+
     @Override
     public Mono<TransactionsResponse> transactions(TransactionsRequest request) {
         return processTransactionAndSave(request)
-                .thenReturn(new TransactionsResponse("Transaction processed successfully"));
+                .then(sendPostRequest(request));
     }
 
     private Mono<TransactionsEntity> processTransactionAndSave(TransactionsRequest request) {
@@ -37,5 +40,15 @@ public class TransactionServiceImpl implements TransactionService {
         return Mono.delay(Duration.ofSeconds(PROCESSING_DELAY_SECONDS))
                 .then(transactionRepository.save(entity))
                 .doOnSuccess(savedEntity -> log.info("Transaction entity saved: {}", savedEntity.getTransactionId()));
+    }
+
+    private Mono<TransactionsResponse> sendPostRequest(TransactionsRequest request) {
+        return webClient.post()
+                .uri("/process-payment")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(TransactionsResponse.class)
+                .doOnNext(response -> log.info("External service response: {}", response))
+                .doOnError(error -> log.error("Error during external POST call", error));
     }
 }

@@ -12,5 +12,24 @@ services:
     volumes:
       - postgres_1_data:/var/lib/postgresql/data
 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    restart: always
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+
 volumes:
   postgres_1_data:
