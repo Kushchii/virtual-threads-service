@@ -15,6 +15,7 @@ spring:
     password: ${spring.datasource.password}
   datasource:
     hikari:
+      maximum-pool-size: 100
       connection-timeout: 10000
     url: jdbc:postgresql://localhost:5432/transaction_service
     username: root
