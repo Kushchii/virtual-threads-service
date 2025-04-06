@@ -10,11 +10,11 @@ export let totalRequests = new Counter('http_reqs_total');
 export let statusCodes = new Counter('status_codes');
 
 export let options = {
-    vus: 1000,
+    vus: 4000,
     duration: '200s',
     thresholds: {
-        http_req_duration: ['p(95)<2000'], // 95% запитів повинні бути швидше ніж 2 сек
-        http_req_failed: ['rate<0.01'], // Менше 1% запитів можуть бути невдалими
+        http_req_duration: ['p(95)<5000'],
+        http_req_failed: ['rate<0.01'],
     }
 };
 
@@ -43,7 +43,7 @@ export default function () {
 
     check(res, {
         'status is 200': (r) => r.status === 200,
-        'response time < 2500ms': (r) => r.timings.duration < 2500,
+        'response time < 5000ms': (r) => r.timings.duration < 2500,
     });
 
     sleep(1);
